@@ -1,0 +1,310 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1AEB706C16D27882007A35D2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AEB706B16D27882007A35D2 /* Cocoa.framework */; };
+		1AEB707616D27882007A35D2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1AEB707416D27882007A35D2 /* InfoPlist.strings */; };
+		1AEB707816D27883007A35D2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AEB707716D27882007A35D2 /* main.m */; };
+		1AEB707C16D27883007A35D2 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 1AEB707A16D27883007A35D2 /* Credits.rtf */; };
+		1AEB707F16D27883007A35D2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AEB707E16D27883007A35D2 /* AppDelegate.m */; };
+		1AEB708216D27883007A35D2 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1AEB708016D27883007A35D2 /* MainMenu.xib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		1AEB706816D27882007A35D2 /* MouseFollowsFocus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MouseFollowsFocus.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1AEB706B16D27882007A35D2 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		1AEB706E16D27882007A35D2 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		1AEB706F16D27882007A35D2 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		1AEB707016D27882007A35D2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		1AEB707316D27882007A35D2 /* MouseFollowsFocus-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MouseFollowsFocus-Info.plist"; sourceTree = "<group>"; };
+		1AEB707516D27882007A35D2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1AEB707716D27882007A35D2 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		1AEB707916D27883007A35D2 /* MouseFollowsFocus-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MouseFollowsFocus-Prefix.pch"; sourceTree = "<group>"; };
+		1AEB707B16D27883007A35D2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		1AEB707D16D27883007A35D2 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		1AEB707E16D27883007A35D2 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		1AEB708116D27883007A35D2 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1AEB706516D27882007A35D2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1AEB706C16D27882007A35D2 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1AEB705F16D27882007A35D2 = {
+			isa = PBXGroup;
+			children = (
+				1AEB707116D27882007A35D2 /* MouseFollowsFocus */,
+				1AEB706A16D27882007A35D2 /* Frameworks */,
+				1AEB706916D27882007A35D2 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		1AEB706916D27882007A35D2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1AEB706816D27882007A35D2 /* MouseFollowsFocus.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1AEB706A16D27882007A35D2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1AEB706B16D27882007A35D2 /* Cocoa.framework */,
+				1AEB706D16D27882007A35D2 /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		1AEB706D16D27882007A35D2 /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1AEB706E16D27882007A35D2 /* AppKit.framework */,
+				1AEB706F16D27882007A35D2 /* CoreData.framework */,
+				1AEB707016D27882007A35D2 /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		1AEB707116D27882007A35D2 /* MouseFollowsFocus */ = {
+			isa = PBXGroup;
+			children = (
+				1AEB707D16D27883007A35D2 /* AppDelegate.h */,
+				1AEB707E16D27883007A35D2 /* AppDelegate.m */,
+				1AEB708016D27883007A35D2 /* MainMenu.xib */,
+				1AEB707216D27882007A35D2 /* Supporting Files */,
+			);
+			path = MouseFollowsFocus;
+			sourceTree = "<group>";
+		};
+		1AEB707216D27882007A35D2 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				1AEB707316D27882007A35D2 /* MouseFollowsFocus-Info.plist */,
+				1AEB707416D27882007A35D2 /* InfoPlist.strings */,
+				1AEB707716D27882007A35D2 /* main.m */,
+				1AEB707916D27883007A35D2 /* MouseFollowsFocus-Prefix.pch */,
+				1AEB707A16D27883007A35D2 /* Credits.rtf */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1AEB706716D27882007A35D2 /* MouseFollowsFocus */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1AEB708516D27883007A35D2 /* Build configuration list for PBXNativeTarget "MouseFollowsFocus" */;
+			buildPhases = (
+				1AEB706416D27882007A35D2 /* Sources */,
+				1AEB706516D27882007A35D2 /* Frameworks */,
+				1AEB706616D27882007A35D2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MouseFollowsFocus;
+			productName = MouseFollowsFocus;
+			productReference = 1AEB706816D27882007A35D2 /* MouseFollowsFocus.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1AEB706016D27882007A35D2 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0460;
+				ORGANIZATIONNAME = martind;
+			};
+			buildConfigurationList = 1AEB706316D27882007A35D2 /* Build configuration list for PBXProject "MouseFollowsFocus" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 1AEB705F16D27882007A35D2;
+			productRefGroup = 1AEB706916D27882007A35D2 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1AEB706716D27882007A35D2 /* MouseFollowsFocus */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1AEB706616D27882007A35D2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1AEB707616D27882007A35D2 /* InfoPlist.strings in Resources */,
+				1AEB707C16D27883007A35D2 /* Credits.rtf in Resources */,
+				1AEB708216D27883007A35D2 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1AEB706416D27882007A35D2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1AEB707816D27883007A35D2 /* main.m in Sources */,
+				1AEB707F16D27883007A35D2 /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		1AEB707416D27882007A35D2 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1AEB707516D27882007A35D2 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		1AEB707A16D27883007A35D2 /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1AEB707B16D27883007A35D2 /* en */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		1AEB708016D27883007A35D2 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1AEB708116D27883007A35D2 /* en */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		1AEB708316D27883007A35D2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		1AEB708416D27883007A35D2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		1AEB708616D27883007A35D2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MouseFollowsFocus/MouseFollowsFocus-Prefix.pch";
+				INFOPLIST_FILE = "MouseFollowsFocus/MouseFollowsFocus-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		1AEB708716D27883007A35D2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MouseFollowsFocus/MouseFollowsFocus-Prefix.pch";
+				INFOPLIST_FILE = "MouseFollowsFocus/MouseFollowsFocus-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1AEB706316D27882007A35D2 /* Build configuration list for PBXProject "MouseFollowsFocus" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1AEB708316D27883007A35D2 /* Debug */,
+				1AEB708416D27883007A35D2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1AEB708516D27883007A35D2 /* Build configuration list for PBXNativeTarget "MouseFollowsFocus" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1AEB708616D27883007A35D2 /* Debug */,
+				1AEB708716D27883007A35D2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 1AEB706016D27882007A35D2 /* Project object */;
+}
