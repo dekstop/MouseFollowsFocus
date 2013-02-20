@@ -10,6 +10,13 @@
 //  - screen numbers may change -- need to "register a callback (CGDisplayRegisterReconfigurationCallback) and examine the changes that occur (kCGDisplayAddFlag, kCGDisplayRemoveFlag, etc)"
 //
 //  TODO:
+//  - FIXME: dragging a window from display 1 to display 2: moves mouse pos. for display 1 off-screen (onto display 2)
+//    - when storing: only store updated position if it's within display bounds?
+//    - when restoring: if mouse pos outside display bounds: revert to default (centre of window)
+//  - FIXME: launching an application on a separate display doesn't appear to trigger a focus change
+//    - to reproduce: focus on display 2, start an app that opens on display 1
+//  - FIXME: similar with closing an application: this may result in the mouse cursor moving to a different display, depending on the previously focused app.
+//    - not sure how to remedy this. Mouse movement is unexpected; but it does reflect actual input focus change.
 //  - monitor display changes: CGDisplayRegisterReconfigurationCallback, CGDisplayRemoveReconfigurationCallback
 //
 //  Created by mongo on 18/02/2013.
@@ -23,13 +30,23 @@
 id curScreenId = NULL;
 NSMutableDictionary *mousePosForScreen;
 
-__attribute__((constructor))
-static void initialize_mousePosDict() {
-    mousePosForScreen = [[NSMutableDictionary alloc] init];
+- (id)init {
+    if (self = [super init]) {
+        mousePosForScreen = [[NSMutableDictionary alloc] init];
+    }
+    return self;
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+    // Status bar / tray icon
+    statusItem = [[NSStatusBar systemStatusBar] statusItemWithLength:NSVariableStatusItemLength];
+    [statusItem setMenu:statusMenu];
+    [statusItem setTitle:@"M"];
+//    - (void)setImage:(NSImage *)image
+//    -(void)setAlternateImage:(NSImage *)image
+    [statusItem setHighlightMode:YES];
+    
     // Get display setup
     uint32_t numDisplays = 4;
     CGDirectDisplayID displays[numDisplays];
@@ -46,6 +63,16 @@ static void initialize_mousePosDict() {
     [center addObserver:self selector:@selector(notificationHandler:) name:NSWorkspaceDidActivateApplicationNotification object:nil ];
     
     // [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (IBAction)about:(id)pId
+{
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/dekstop/MouseFollowsFocus"]];
+}
+
+- (IBAction)quit:(id)pId
+{
+    [NSApp performSelector:@selector(terminate:) withObject:nil afterDelay:0.0];
 }
 
 - (void)notificationHandler:(NSNotification *)notification
