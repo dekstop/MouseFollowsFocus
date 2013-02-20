@@ -10,10 +10,15 @@
 
 @interface AppDelegate : NSObject <NSApplicationDelegate> {
     IBOutlet NSMenu *statusMenu;
-    Boolean isActive;
-    Boolean startOnStartup;
     NSStatusItem *statusItem;
+
+    BOOL isActive;
+    IBOutlet NSMenuItem *isActiveMenuItem;
+//    IBOutlet NSMenuItem *startOnStartupMenuItem;
 }
+@property BOOL isActive;
+- (IBAction)toggleIsActive:(id)pId;
+//- (IBAction)toggleStartOnStartup:(id)pId;
 - (IBAction)about:(id)pId;
 - (IBAction)quit:(id)pId;
 @end

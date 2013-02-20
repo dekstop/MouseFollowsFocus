@@ -31,6 +31,8 @@
 
 @implementation AppDelegate
 
+@synthesize isActive;
+
 id curScreenId = NULL;
 NSMutableDictionary *mousePosForScreen;
 
@@ -38,9 +40,21 @@ NSMutableDictionary *mousePosForScreen;
     if (self = [super init]) {
         mousePosForScreen = [[NSMutableDictionary alloc] init];
         curScreenId = [[[NSScreen mainScreen] deviceDescription] objectForKey:@"NSScreenNumber"];
+        isActive = TRUE;
     }
     return self;
 }
+
+- (IBAction)toggleIsActive:(id)pId
+{
+    isActive = !isActive;
+    [isActiveMenuItem setState:(isActive ? NSOnState : NSOffState)];
+}
+
+//- (IBAction)toggleStartOnStartup:(id)pId
+//{
+//    
+//}
 
 - (IBAction)about:(id)pId
 {
@@ -85,6 +99,9 @@ NSMutableDictionary *mousePosForScreen;
 
 - (void)notificationHandler:(NSNotification *)notification
 {
+    if (!isActive) {
+        return;
+    }
     NSLog(@"Notification: %@", [notification name]);
 
     NSRunningApplication *app = [[notification userInfo] objectForKey:@"NSWorkspaceApplicationKey"];
