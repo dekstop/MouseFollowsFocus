@@ -10,12 +10,16 @@
 //  - screen numbers may change -- need to "register a callback (CGDisplayRegisterReconfigurationCallback) and examine the changes that occur (kCGDisplayAddFlag, kCGDisplayRemoveFlag, etc)"
 //
 //  TODO:
+//  - implement menu toggles (check marks)
+//  - launch at system startup http://cocoatutorial.grapewave.com/tag/lssharedfilelist-h/
 //  - FIXME: dragging a window from display 1 to display 2: moves mouse pos. for display 1 off-screen (onto display 2)
 //    - when storing: only store updated position if it's within display bounds?
 //    - when restoring: if mouse pos outside display bounds: revert to default (centre of window)
 //  - FIXME: launching an application on a separate display doesn't appear to trigger a focus change
 //    - to reproduce: focus on display 2, start an app that opens on display 1
-//  - FIXME: similar with closing an application: this may result in the mouse cursor moving to a different display, depending on the previously focused app.
+//    - cause: both "launch" and "active" notifications get triggered before the app window is created
+//  - FIXME: similar problem when closing an application.
+//    - this may result in the mouse cursor moving to a different display, depending on the previously focused app.
 //    - not sure how to remedy this. Mouse movement is unexpected; but it does reflect actual input focus change.
 //  - monitor display changes: CGDisplayRegisterReconfigurationCallback, CGDisplayRemoveReconfigurationCallback
 //
@@ -33,8 +37,19 @@ NSMutableDictionary *mousePosForScreen;
 - (id)init {
     if (self = [super init]) {
         mousePosForScreen = [[NSMutableDictionary alloc] init];
+        curScreenId = [[[NSScreen mainScreen] deviceDescription] objectForKey:@"NSScreenNumber"];
     }
     return self;
+}
+
+- (IBAction)about:(id)pId
+{
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/dekstop/MouseFollowsFocus"]];
+}
+
+- (IBAction)quit:(id)pId
+{
+    [NSApp performSelector:@selector(terminate:) withObject:nil afterDelay:0.0];
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
@@ -60,27 +75,30 @@ NSMutableDictionary *mousePosForScreen;
     
     // Register app activation notification observer
     NSNotificationCenter * center = [[NSWorkspace sharedWorkspace]notificationCenter];
+
+    [center addObserver:self selector:@selector(notificationHandler:) name:NSWorkspaceDidLaunchApplicationNotification object:nil ];
     [center addObserver:self selector:@selector(notificationHandler:) name:NSWorkspaceDidActivateApplicationNotification object:nil ];
-    
+    [center addObserver:self selector:@selector(notificationHandler:) name:NSWorkspaceDidUnhideApplicationNotification object:nil ];
+
     // [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (IBAction)about:(id)pId
-{
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/dekstop/MouseFollowsFocus"]];
-}
-
-- (IBAction)quit:(id)pId
-{
-    [NSApp performSelector:@selector(terminate:) withObject:nil afterDelay:0.0];
 }
 
 - (void)notificationHandler:(NSNotification *)notification
 {
+    NSLog(@"Notification: %@", [notification name]);
+
     NSRunningApplication *app = [[notification userInfo] objectForKey:@"NSWorkspaceApplicationKey"];
+//    NSLog(@"App: %@", app);
+
+    // Ignore our own app notifications during launch -- we don't have an app window.
+    if ([[app bundleIdentifier] isEqualTo:[[NSBundle mainBundle] bundleIdentifier]]) {
+        return;
+    }
     
     NSDictionary *window = [self getFrontWindowForApp: app];
+//    NSLog(@"Window: %@", window);
     if (window==NULL) {
+        // Was this a notification for a window-less app?
         NSLog(@"Could not determine which window has focus.");
         return;
     }
@@ -92,18 +110,16 @@ NSMutableDictionary *mousePosForScreen;
 
     // So instead we'll identify the first screen that contains the frontmost window.
     NSEnumerator *screenEnum = [[NSScreen screens] objectEnumerator];
-    NSScreen *screen;
-    while ((screen = [screenEnum nextObject]) && ![self screenBoundsOf:screen containWindow:window]);
-    if (screen==NULL) {
+    NSScreen *newScreen;
+    while ((newScreen = [screenEnum nextObject]) && ![self screenBoundsOf:newScreen containWindow:window]);
+    if (newScreen==NULL) {
         NSLog(@"Could not determine current display.");
         return;
     }
-    id newScreenId = [[screen deviceDescription] objectForKey:@"NSScreenNumber"];
+    id newScreenId = [[newScreen deviceDescription] objectForKey:@"NSScreenNumber"];
 
     // Has active display changed?
-    if (curScreenId==NULL) {
-        // First call: pass
-    } else if (screen!=NULL && newScreenId!=curScreenId) {
+    if (newScreenId!=NULL && newScreenId!=curScreenId) {
 
         NSString *name = [window objectForKey:@"kCGWindowName" ];
         NSLog(@"Switched to window %@ on display %@", name, newScreenId);
@@ -117,6 +133,9 @@ NSMutableDictionary *mousePosForScreen;
             // None stored: determine center of new window
             nextMousePos = [self getCenterPointForWindow:window];
         }
+//        NSLog(@"Screen bounds: %@", [NSValue valueWithRect:[newScreen frame]]);
+//        NSLog(@"New mouse pos: %@", [NSValue valueWithPoint:nextMousePos]);
+        
         // Remember current position
         CGPoint curMousePos = CGEventGetLocation(CGEventCreate(NULL));
         [mousePosForScreen setObject:[NSValue valueWithPoint:curMousePos] forKey:curScreenId];
@@ -139,6 +158,7 @@ NSMutableDictionary *mousePosForScreen;
     for (NSMutableDictionary *theDict in data) {
         id pid = [theDict objectForKey:(id)kCGWindowOwnerPID];
         if ([pid intValue] == [app processIdentifier]) {
+//            NSLog(@"%@", theDict);
             id layer = [theDict objectForKey:(id)kCGWindowLayer];
             if ([layer intValue] == 0) {
                 // The first entry is the front-facing one
