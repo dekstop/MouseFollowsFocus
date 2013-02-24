@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1A258E8C16D817F100F8C3B0 /* README in Resources */ = {isa = PBXBuildFile; fileRef = 1A258E8B16D817F100F8C3B0 /* README */; };
 		1AEB706C16D27882007A35D2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AEB706B16D27882007A35D2 /* Cocoa.framework */; };
 		1AEB707616D27882007A35D2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1AEB707416D27882007A35D2 /* InfoPlist.strings */; };
 		1AEB707816D27883007A35D2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AEB707716D27882007A35D2 /* main.m */; };
@@ -16,6 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1A258E8B16D817F100F8C3B0 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		1AEB706816D27882007A35D2 /* MouseFollowsFocus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MouseFollowsFocus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AEB706B16D27882007A35D2 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		1AEB706E16D27882007A35D2 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -86,6 +88,7 @@
 				1AEB707E16D27883007A35D2 /* AppDelegate.m */,
 				1AEB708016D27883007A35D2 /* MainMenu.xib */,
 				1AEB707216D27882007A35D2 /* Supporting Files */,
+				1A258E8B16D817F100F8C3B0 /* README */,
 			);
 			path = MouseFollowsFocus;
 			sourceTree = "<group>";
@@ -156,6 +159,7 @@
 				1AEB707616D27882007A35D2 /* InfoPlist.strings in Resources */,
 				1AEB707C16D27883007A35D2 /* Credits.rtf in Resources */,
 				1AEB708216D27883007A35D2 /* MainMenu.xib in Resources */,
+				1A258E8C16D817F100F8C3B0 /* README in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -303,6 +307,7 @@
 				1AEB708716D27883007A35D2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

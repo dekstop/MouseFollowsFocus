@@ -1,0 +1,34 @@
+
+== Mouse Follows Focus
+
+An OS X utility for multi-display setups: moves the mouse cursor to the currently active display
+when switching between applications.
+
+Limitations:
+* OSX offers no means of tracking the active _window_ (aka the "key window"), only the active
+  application. As a result there's a lot of manual checking and guesswork to determine the key 
+  window once we know the frontmost app. Additionally we can't currently detect when window
+  focus changes _within_ an app. Yes, that's annoying.
+* A few interaction sequences may not quite work yet; e.g. when launching an application on a 
+  separate display.
+* There's lots more to do. Check the top of AppDelegate.m for a list.
+
+Martin Dittus, 2013
+@dekstop
+
+
+== Installation
+
+Get the source here:
+https://github.com/dekstop/MouseFollowsFocus
+
+Compile, run.
+
+Only tested with Xcode 4.6 on OS X 10.8
+
+
+== See Also
+
+Found these after I started this project:
+MouseWarp (cheap), http://macendeavor.com/mousewarp/
+App Switch (free), https://itunes.apple.com/us/app/app-switch/id564156701?ls=1&mt=12

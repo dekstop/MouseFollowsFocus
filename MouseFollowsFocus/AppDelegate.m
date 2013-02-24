@@ -10,11 +10,9 @@
 //  - screen numbers may change -- need to "register a callback (CGDisplayRegisterReconfigurationCallback) and examine the changes that occur (kCGDisplayAddFlag, kCGDisplayRemoveFlag, etc)"
 //
 //  TODO:
+//  - lots of refactoring.
 //  - implement menu toggles (check marks)
 //  - launch at system startup http://cocoatutorial.grapewave.com/tag/lssharedfilelist-h/
-//  - FIXME: dragging a window from display 1 to display 2: moves mouse pos. for display 1 off-screen (onto display 2)
-//    - when storing: only store updated position if it's within display bounds?
-//    - when restoring: if mouse pos outside display bounds: revert to default (centre of window)
 //  - FIXME: launching an application on a separate display doesn't appear to trigger a focus change
 //    - to reproduce: focus on display 2, start an app that opens on display 1
 //    - cause: both "launch" and "active" notifications get triggered before the app window is created
@@ -33,13 +31,13 @@
 
 @synthesize isActive;
 
-id curScreenId = NULL;
+NSScreen *curScreen = nil;
 NSMutableDictionary *mousePosForScreen;
 
 - (id)init {
     if (self = [super init]) {
         mousePosForScreen = [[NSMutableDictionary alloc] init];
-        curScreenId = [[[NSScreen mainScreen] deviceDescription] objectForKey:@"NSScreenNumber"];
+        curScreen = [NSScreen mainScreen];
         isActive = TRUE;
     }
     return self;
@@ -93,7 +91,6 @@ NSMutableDictionary *mousePosForScreen;
     [center addObserver:self selector:@selector(notificationHandler:) name:NSWorkspaceDidLaunchApplicationNotification object:nil ];
     [center addObserver:self selector:@selector(notificationHandler:) name:NSWorkspaceDidActivateApplicationNotification object:nil ];
     [center addObserver:self selector:@selector(notificationHandler:) name:NSWorkspaceDidUnhideApplicationNotification object:nil ];
-
     // [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -102,7 +99,7 @@ NSMutableDictionary *mousePosForScreen;
     if (!isActive) {
         return;
     }
-    NSLog(@"Notification: %@", [notification name]);
+    NSLog(@"*** Notification: %@ ***", [notification name]);
 
     NSRunningApplication *app = [[notification userInfo] objectForKey:@"NSWorkspaceApplicationKey"];
 //    NSLog(@"App: %@", app);
@@ -114,56 +111,25 @@ NSMutableDictionary *mousePosForScreen;
     
     NSDictionary *window = [self getFrontWindowForApp: app];
 //    NSLog(@"Window: %@", window);
-    if (window==NULL) {
+    if (window==nil) {
         // Was this a notification for a window-less app?
         NSLog(@"Could not determine which window has focus.");
         return;
     }
 
     // Determine active display.
-    
-    // This does not work reliably:
-    // NSScreen *screen = [NSScreen mainScreen];
-
-    // So instead we'll identify the first screen that contains the frontmost window.
-    NSEnumerator *screenEnum = [[NSScreen screens] objectEnumerator];
-    NSScreen *newScreen;
-    while ((newScreen = [screenEnum nextObject]) && ![self screenBoundsOf:newScreen containWindow:window]);
-    if (newScreen==NULL) {
+    NSScreen *newScreen = [self getScreenForWindow:window];
+    if (newScreen==nil) {
         NSLog(@"Could not determine current display.");
         return;
     }
-    id newScreenId = [[newScreen deviceDescription] objectForKey:@"NSScreenNumber"];
 
-    // Has active display changed?
-    if (newScreenId!=NULL && newScreenId!=curScreenId) {
+    // Move mouse
+    NSLog(@"Switched to window %@ on display %@",
+          [window objectForKey:@"kCGWindowName"],
+          [self getIdForScreen:newScreen]);
 
-        NSString *name = [window objectForKey:@"kCGWindowName" ];
-        NSLog(@"Switched to window %@ on display %@", name, newScreenId);
-    
-        // Determine new mouse position
-        NSPoint nextMousePos;
-        if ([mousePosForScreen objectForKey:newScreenId]) {
-            // Retrieve previous mouse pos on that display
-            nextMousePos = [[mousePosForScreen objectForKey:newScreenId] pointValue];
-        } else {
-            // None stored: determine center of new window
-            nextMousePos = [self getCenterPointForWindow:window];
-        }
-//        NSLog(@"Screen bounds: %@", [NSValue valueWithRect:[newScreen frame]]);
-//        NSLog(@"New mouse pos: %@", [NSValue valueWithPoint:nextMousePos]);
-        
-        // Remember current position
-        CGPoint curMousePos = CGEventGetLocation(CGEventCreate(NULL));
-        [mousePosForScreen setObject:[NSValue valueWithPoint:curMousePos] forKey:curScreenId];
-
-        // Move to new position
-        CGError error = CGWarpMouseCursorPosition(nextMousePos);
-        if (error != kCGErrorSuccess) {
-            NSLog(@"Error setting mouse position: %d", error);
-        }
-    }
-    curScreenId = newScreenId;
+    [self moveMouseToWindow:window onScreen:newScreen];
 }
 
 - (NSDictionary*)getFrontWindowForApp:(NSRunningApplication *)app
@@ -183,7 +149,61 @@ NSMutableDictionary *mousePosForScreen;
             }
         }
     }
-    return NULL;
+    return nil;
+}
+
+- (NSScreen*) getScreenForWindow:(NSDictionary *)window
+{
+    // This does not work reliably:
+    // NSScreen *screen = [NSScreen mainScreen];
+    
+    // So instead we'll identify the first screen that contains the frontmost window.
+    NSEnumerator *screenEnum = [[NSScreen screens] objectEnumerator];
+    NSScreen *newScreen = nil;
+    while ((newScreen = [screenEnum nextObject]) && ![self screenBoundsOf:newScreen containWindow:window]);
+    // May return nil
+    return newScreen;
+}
+
+- (void)moveMouseToWindow:(NSDictionary *)window onScreen:(id)newScreen
+{
+    // Has active display changed?
+    if ([newScreen isEqualTo:curScreen]) {
+        NSLog(@"Same screen, aborting");
+        return;
+    }
+
+    // Determine new mouse position
+    NSPoint nextMousePos;
+    if ([self hasMousePosForScreen:newScreen]) {
+        // Retrieve previous mouse pos on that display
+        NSLog(@"Restoring previous mouse pos");
+        nextMousePos = [self getMousePosForScreen:newScreen];
+    } else {
+        // None stored: determine center of new window
+        NSLog(@"Calculating new mouse pos from window bounds");
+        nextMousePos = [self getCenterPointForWindow:window];
+    }
+    
+    // Remember current position -- but only if mouse hasn't moved off-screen already.
+    NSPoint curMousePos = CGEventGetLocation(CGEventCreate(NULL));
+    if (NSPointInRect(curMousePos, [curScreen frame])) {
+//        NSLog(@"Remembering mouse pos on previous screen %@", [self getIdForScreen:curScreen]);
+        [self setMousePos:curMousePos forScreen:curScreen];
+    } else {
+        // Mouse was manually moved across displays: don't remember position
+//        NSLog(@"Discard mouse pos which has moved outside screen %@", [self getIdForScreen:curScreen]);
+        [self clearMousePosForScreen:curScreen];
+    }
+    
+    // Move to new screen -- but only if we're not already on it.
+    if (!NSPointInRect(curMousePos, [newScreen frame])) {
+        CGError error = CGWarpMouseCursorPosition(nextMousePos);
+        if (error != kCGErrorSuccess) {
+            NSLog(@"Error setting mouse position: %d", error);
+        }
+    }
+    curScreen = newScreen;
 }
 
 - (Boolean) screenBoundsOf:(NSScreen*)screen containWindow:(NSDictionary*)window
@@ -199,6 +219,31 @@ NSMutableDictionary *mousePosForScreen;
     CGRect bounds;
     CGRectMakeWithDictionaryRepresentation((__bridge CFDictionaryRef)[window objectForKey:@"kCGWindowBounds"], &bounds);
     return CGPointMake(bounds.origin.x + (bounds.size.width / 2), bounds.origin.y + (bounds.size.height / 2));
+}
+
+- (id) getIdForScreen:(NSScreen*)screen
+{
+    return [[screen deviceDescription] objectForKey:@"NSScreenNumber"];
+}
+
+- (Boolean) hasMousePosForScreen:(NSScreen*)screen
+{
+    return [mousePosForScreen objectForKey:[self getIdForScreen:screen]] != nil;
+}
+
+- (NSPoint) getMousePosForScreen:(NSScreen*)screen
+{
+    return [[mousePosForScreen objectForKey:[self getIdForScreen:screen]] pointValue];
+}
+
+- (void) setMousePos:(NSPoint)mousePos forScreen:(NSScreen*)screen
+{
+    [mousePosForScreen setObject:[NSValue valueWithPoint:mousePos] forKey:[self getIdForScreen:screen]];
+}
+
+- (void) clearMousePosForScreen:(NSScreen*)screen
+{
+    [mousePosForScreen removeObjectForKey:[self getIdForScreen:screen]];
 }
 
 @end
