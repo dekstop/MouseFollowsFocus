@@ -11,6 +11,10 @@
 //  TODO:
 //  - lots of refactoring.
 //  - launch at system startup http://cocoatutorial.grapewave.com/tag/lssharedfilelist-h/
+//  - option: "center on active window" vs "remember last position"
+//  - add an eye-catching animation when moving cursor (e.g. a growing+fading circle)
+//
+//  BUGS:
 //  - FIXME: launching an application on a separate display doesn't appear to trigger a focus change
 //    - to reproduce: focus on display 2, start an app that opens on display 1
 //    - cause: both "launch" and "active" notifications get triggered before the app window is created
