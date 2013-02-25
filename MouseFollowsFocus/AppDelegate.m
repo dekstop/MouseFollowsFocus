@@ -19,7 +19,6 @@
 //  - FIXME: similar problem when closing an application.
 //    - this may result in the mouse cursor moving to a different display, depending on the previously focused app.
 //    - not sure how to remedy this. Mouse movement is unexpected; but it does reflect actual input focus change.
-//  - monitor display changes: CGDisplayRegisterReconfigurationCallback, CGDisplayRemoveReconfigurationCallback
 //
 //  Created by mongo on 18/02/2013.
 //  Copyright (c) 2013 martind. All rights reserved.
@@ -84,6 +83,10 @@ NSMutableDictionary *mousePosForScreen;
     }
     
     NSLog(@"Found %d displays", numDisplays);
+    
+    // Register display change notifications
+    CGDisplayRegisterReconfigurationCallback(DisplayReconfigurationCallBack, nil);
+    // CGDisplayRemoveReconfigurationCallback
     
     // Register app activation notification observer
     NSNotificationCenter * center = [[NSWorkspace sharedWorkspace]notificationCenter];
@@ -245,5 +248,15 @@ NSMutableDictionary *mousePosForScreen;
 {
     [mousePosForScreen removeObjectForKey:[self getIdForScreen:screen]];
 }
+
+void DisplayReconfigurationCallBack(CGDirectDisplayID display, CGDisplayChangeSummaryFlags flags, void *userInfo)
+{
+    if (flags & kCGDisplayRemoveFlag) {
+        NSLog(@"Removing display %d", display);
+//        [self clearMousePosForScreen:display];
+        [mousePosForScreen removeObjectForKey:[NSNumber numberWithInteger:display]];
+    }
+}
+
 
 @end
