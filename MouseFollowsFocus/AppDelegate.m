@@ -7,11 +7,9 @@
 //    Instead there's a lot of manual checking and guesswork to determine the key window once we have the
 //    "running" (frontmost) app.
 //  - It appears there's no means of tracking window focus changes within an application from the outside.
-//  - screen numbers may change -- need to "register a callback (CGDisplayRegisterReconfigurationCallback) and examine the changes that occur (kCGDisplayAddFlag, kCGDisplayRemoveFlag, etc)"
 //
 //  TODO:
 //  - lots of refactoring.
-//  - implement menu toggles (check marks)
 //  - launch at system startup http://cocoatutorial.grapewave.com/tag/lssharedfilelist-h/
 //  - FIXME: launching an application on a separate display doesn't appear to trigger a focus change
 //    - to reproduce: focus on display 2, start an app that opens on display 1
