@@ -29,15 +29,20 @@
 @implementation AppDelegate
 
 @synthesize isActive;
+NSAttributedString *menuTitleActive = nil;
+NSAttributedString *menuTitleInactive = nil;
 
 NSScreen *curScreen = nil;
 NSMutableDictionary *mousePosForScreen;
+
 
 - (id)init {
     if (self = [super init]) {
         mousePosForScreen = [[NSMutableDictionary alloc] init];
         curScreen = [NSScreen mainScreen];
         isActive = TRUE;
+        menuTitleActive = [[NSMutableAttributedString alloc] initWithString:@"M" attributes:@{NSForegroundColorAttributeName:[NSColor blackColor], NSFontAttributeName:[NSFont systemFontOfSize:14.0]}];
+        menuTitleInactive = [[NSMutableAttributedString alloc] initWithString:@"M" attributes:@{NSForegroundColorAttributeName:[NSColor grayColor], NSFontAttributeName:[NSFont systemFontOfSize:14.0]}];
     }
     return self;
 }
@@ -45,7 +50,16 @@ NSMutableDictionary *mousePosForScreen;
 - (IBAction)toggleIsActive:(id)pId
 {
     isActive = !isActive;
+    [self updateIsActiveDisplay];
+}
+
+- (void)updateIsActiveDisplay
+{
     [isActiveMenuItem setState:(isActive ? NSOnState : NSOffState)];
+    [statusItem setAttributedTitle:(isActive ? menuTitleActive : menuTitleInactive)];
+    //    [statusItem setTitle:@"M"];
+    //    - (void)setImage:(NSImage *)image
+    //    -(void)setAlternateImage:(NSImage *)image
 }
 
 //- (IBAction)toggleStartOnStartup:(id)pId
@@ -68,10 +82,8 @@ NSMutableDictionary *mousePosForScreen;
     // Status bar / tray icon
     statusItem = [[NSStatusBar systemStatusBar] statusItemWithLength:NSVariableStatusItemLength];
     [statusItem setMenu:statusMenu];
-    [statusItem setTitle:@"M"];
-//    - (void)setImage:(NSImage *)image
-//    -(void)setAlternateImage:(NSImage *)image
     [statusItem setHighlightMode:YES];
+    [self updateIsActiveDisplay];
     
     // Get display setup
     uint32_t numDisplays = 4;
