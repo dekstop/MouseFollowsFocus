@@ -40,7 +40,6 @@ NSMutableDictionary *mousePosForScreen;
     if (self = [super init]) {
         mousePosForScreen = [[NSMutableDictionary alloc] init];
         curScreen = [NSScreen mainScreen];
-        isActive = TRUE;
         menuTitleActive = [[NSMutableAttributedString alloc] initWithString:@"M" attributes:@{NSForegroundColorAttributeName:[NSColor blackColor], NSFontAttributeName:[NSFont systemFontOfSize:14.0]}];
         menuTitleInactive = [[NSMutableAttributedString alloc] initWithString:@"M" attributes:@{NSForegroundColorAttributeName:[NSColor grayColor], NSFontAttributeName:[NSFont systemFontOfSize:14.0]}];
     }
@@ -50,6 +49,7 @@ NSMutableDictionary *mousePosForScreen;
 - (IBAction)toggleIsActive:(id)pId
 {
     isActive = !isActive;
+    [[NSUserDefaults standardUserDefaults] setBool:isActive forKey:@"isActive"];
     [self updateIsActiveDisplay];
 }
 
@@ -79,6 +79,11 @@ NSMutableDictionary *mousePosForScreen;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+    // App preferences
+    NSDictionary *appDefaults = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:@"isActive"];
+    [[NSUserDefaults standardUserDefaults] registerDefaults:appDefaults];
+    isActive = [[NSUserDefaults standardUserDefaults] boolForKey:@"isActive"];
+    
     // Status bar / tray icon
     statusItem = [[NSStatusBar systemStatusBar] statusItemWithLength:NSVariableStatusItemLength];
     [statusItem setMenu:statusMenu];
