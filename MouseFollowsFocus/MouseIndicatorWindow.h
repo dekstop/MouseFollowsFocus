@@ -11,7 +11,7 @@
 @interface MouseIndicatorWindow : NSWindow {
     float size;
     float timerInterval;
-    float fadeMultiplier;
+    float duration;
 }
 
 - (id)initWithSize:(int)size color:(NSColor*)color;

@@ -14,6 +14,9 @@
 MouseIndicatorView *mouseIndicatorView;
 NSTimer *timer;
 
+float initialAlpha = 0.8;
+double startTime = 0;
+
 - (id)initWithSize:(int)_size color:(NSColor*)color
 {
     self = [super
@@ -26,7 +29,7 @@ NSTimer *timer;
     {
         size = _size;
         timerInterval = 0.05;
-        fadeMultiplier = 0.9;
+        duration = 0.5;
 
         [self setReleasedWhenClosed:NO];
         [self setLevel:NSScreenSaverWindowLevel];
@@ -47,30 +50,34 @@ NSTimer *timer;
                               size,
                               size)
            display:YES];
-    [self setAlphaValue:0.8];
     [self orderFront:nil];
     
     if ([timer isValid]) {
         [timer invalidate]; // Stop active timer
     }
+    [self setAlphaValue:initialAlpha];
+    startTime = CACurrentMediaTime();
     timer = [NSTimer scheduledTimerWithTimeInterval:timerInterval
                                                            target:self
                                                          selector:@selector(updateDisplayTimer)
                                                          userInfo:nil
                                                           repeats:YES];
-
 }
 
 - (void) updateDisplayTimer
 {
-    float alpha = [self alphaValue];
-    alpha = alpha * fadeMultiplier;
+    double elapsedTime = CACurrentMediaTime() - startTime;
     
-    if (alpha<0.05) {
+    float alpha;
+    if (elapsedTime >= duration) {
         alpha = 0.0;
         [timer invalidate];
         [self close];
+    } else {
+        alpha = initialAlpha * (duration - elapsedTime) / duration;
+        alpha *= alpha;
     }
+    
     [self setAlphaValue:alpha];
     [self display];
 }
