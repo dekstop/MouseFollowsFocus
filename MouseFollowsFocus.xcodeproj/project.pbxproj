@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1A09AAAB16DC35C900034BF3 /* MouseIndicatorWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A09AAAA16DC35C900034BF3 /* MouseIndicatorWindow.m */; };
+		1A09AAAE16DC3BE100034BF3 /* MouseIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A09AAAD16DC3BE100034BF3 /* MouseIndicatorView.m */; };
 		1AEB706C16D27882007A35D2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AEB706B16D27882007A35D2 /* Cocoa.framework */; };
 		1AEB707616D27882007A35D2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1AEB707416D27882007A35D2 /* InfoPlist.strings */; };
 		1AEB707816D27883007A35D2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AEB707716D27882007A35D2 /* main.m */; };
@@ -16,6 +18,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1A09AAA916DC35C900034BF3 /* MouseIndicatorWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MouseIndicatorWindow.h; sourceTree = "<group>"; };
+		1A09AAAA16DC35C900034BF3 /* MouseIndicatorWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MouseIndicatorWindow.m; sourceTree = "<group>"; };
+		1A09AAAC16DC3BE100034BF3 /* MouseIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MouseIndicatorView.h; sourceTree = "<group>"; };
+		1A09AAAD16DC3BE100034BF3 /* MouseIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MouseIndicatorView.m; sourceTree = "<group>"; };
 		1AEB706816D27882007A35D2 /* MouseFollowsFocus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MouseFollowsFocus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AEB706B16D27882007A35D2 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		1AEB706E16D27882007A35D2 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -82,6 +88,10 @@
 		1AEB707116D27882007A35D2 /* MouseFollowsFocus */ = {
 			isa = PBXGroup;
 			children = (
+				1A09AAA916DC35C900034BF3 /* MouseIndicatorWindow.h */,
+				1A09AAAA16DC35C900034BF3 /* MouseIndicatorWindow.m */,
+				1A09AAAC16DC3BE100034BF3 /* MouseIndicatorView.h */,
+				1A09AAAD16DC3BE100034BF3 /* MouseIndicatorView.m */,
 				1AEB707D16D27883007A35D2 /* AppDelegate.h */,
 				1AEB707E16D27883007A35D2 /* AppDelegate.m */,
 				1AEB708016D27883007A35D2 /* MainMenu.xib */,
@@ -168,6 +178,8 @@
 			files = (
 				1AEB707816D27883007A35D2 /* main.m in Sources */,
 				1AEB707F16D27883007A35D2 /* AppDelegate.m in Sources */,
+				1A09AAAB16DC35C900034BF3 /* MouseIndicatorWindow.m in Sources */,
+				1A09AAAE16DC3BE100034BF3 /* MouseIndicatorView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
