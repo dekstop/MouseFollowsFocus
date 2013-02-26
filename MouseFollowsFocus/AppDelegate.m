@@ -27,6 +27,7 @@
 
 #import "AppDelegate.h"
 #import "MouseIndicatorWindow.h"
+#import <Carbon/Carbon.h>
 
 @implementation AppDelegate
 
@@ -128,6 +129,73 @@ MouseIndicatorWindow *mouseIndicator;
     [center addObserver:self selector:@selector(notificationHandler:) name:NSWorkspaceDidActivateApplicationNotification object:nil ];
     [center addObserver:self selector:@selector(notificationHandler:) name:NSWorkspaceDidUnhideApplicationNotification object:nil ];
     // [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+    // Register global event monitors -- may require assistive device access.
+    // Note: we monitor key/mouse "up" (clicked) events instead of "down" (pressed) in an attempt to
+    // let window focus changes happen _before_ we try to detect them. Depending on the nature of the
+    // transition this may still not be sufficient. (E.g. minimising a window takes a fairly long time.)
+    [NSEvent addGlobalMonitorForEventsMatchingMask:(NSKeyUpMask | NSLeftMouseUpMask) handler:^(NSEvent *event){
+        BOOL doTrigger = FALSE;
+        // Check for mouse clicks that may trigger a focus change.
+        if ([event type] == NSLeftMouseUp) {
+            doTrigger = TRUE;
+        }
+        // Check for key combinations that may trigger a focus change.
+        // Full list: http://support.apple.com/kb/ht1343
+        else if ([event type] == NSKeyUp) {
+            NSUInteger modifierKeyMask = NSCommandKeyMask | NSShiftKeyMask | NSAlternateKeyMask | NSControlKeyMask | NSFunctionKeyMask;
+            NSUInteger modifierFlags = [event modifierFlags] & modifierKeyMask;
+            unsigned short keyCode = [event keyCode];
+            // Cmd
+            if (modifierFlags == NSCommandKeyMask) {
+                switch (keyCode) {
+                    case kVK_LeftArrow:
+                    case kVK_RightArrow:
+                    case kVK_ANSI_Grave: // '~'
+                    case kVK_ANSI_M:
+                    case kVK_ANSI_H:
+                    case kVK_ANSI_W:
+                        doTrigger = TRUE;
+                }
+            }
+            // Cmd+Shift
+            else if (modifierFlags == (NSCommandKeyMask | NSShiftKeyMask)) {
+                switch (keyCode) {
+                    case kVK_ANSI_X: // Show mouse indicator (to debug)
+                        [mouseIndicator showAt:MouseCoordsToScreenCoords([self getMousePos], curScreen) onScreen:curScreen];
+                        break;
+                    case kVK_ANSI_Grave: // '~'
+                        doTrigger = TRUE;
+                }
+            }
+            // Cmd+Opt
+            else if (modifierFlags == (NSCommandKeyMask | NSAlternateKeyMask)) {
+                switch (keyCode) {
+                    case kVK_ANSI_M:
+                    case kVK_ANSI_H:
+                        doTrigger = TRUE;
+                }
+            }
+            // Ctrl
+            else if (modifierFlags == NSControlKeyMask) {
+                switch (keyCode) {
+                    case kVK_F4:
+                        doTrigger = TRUE;
+                }
+            }
+            // Ctrl+Shift
+            else if (modifierFlags == (NSControlKeyMask | NSShiftKeyMask)) {
+                switch (keyCode) {
+                    case kVK_F4:
+                        doTrigger = TRUE;
+                }
+            }
+        }
+        if (doTrigger) {
+            NSDictionary *activeApp = [[NSWorkspace sharedWorkspace] activeApplication];
+            [self updateActiveScreenForRunningApp:[activeApp objectForKey:@"NSWorkspaceApplicationKey"]];
+        }
+    }];
 }
 
 - (void)notificationHandler:(NSNotification *)notification
