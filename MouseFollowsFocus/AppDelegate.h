@@ -14,11 +14,11 @@
 
     BOOL isActive;
     IBOutlet NSMenuItem *isActiveMenuItem;
-//    IBOutlet NSMenuItem *startOnStartupMenuItem;
+    IBOutlet NSMenuItem *launchOnStartupMenuItem;
 }
 @property BOOL isActive;
 - (IBAction)toggleIsActive:(id)pId;
-//- (IBAction)toggleStartOnStartup:(id)pId;
+- (IBAction)toggleLaunchOnStartup:(id)pId;
 - (IBAction)about:(id)pId;
 - (IBAction)quit:(id)pId;
 @end
