@@ -22,6 +22,7 @@
 		1A09AAAA16DC35C900034BF3 /* MouseIndicatorWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MouseIndicatorWindow.m; sourceTree = "<group>"; };
 		1A09AAAC16DC3BE100034BF3 /* MouseIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MouseIndicatorView.h; sourceTree = "<group>"; };
 		1A09AAAD16DC3BE100034BF3 /* MouseIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MouseIndicatorView.m; sourceTree = "<group>"; };
+		1A562FC516DC7CA600483F28 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
 		1AEB706816D27882007A35D2 /* MouseFollowsFocus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MouseFollowsFocus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AEB706B16D27882007A35D2 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		1AEB706E16D27882007A35D2 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -42,6 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A562FC616DC7CA600483F28 /* Carbon.framework in Frameworks */,
 				1AEB706C16D27882007A35D2 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -52,6 +54,7 @@
 		1AEB705F16D27882007A35D2 = {
 			isa = PBXGroup;
 			children = (
+				1A562FC516DC7CA600483F28 /* Carbon.framework */,
 				1AEB707116D27882007A35D2 /* MouseFollowsFocus */,
 				1AEB706A16D27882007A35D2 /* Frameworks */,
 				1AEB706916D27882007A35D2 /* Products */,
