@@ -126,7 +126,7 @@ MouseIndicatorWindow *mouseIndicator;
     if (!isActive) {
         return;
     }
-    NSLog(@"*** Notification: %@ ***", [notification name]);
+//    NSLog(@"*** Notification: %@ ***", [notification name]);
 
     NSRunningApplication *app = [[notification userInfo] objectForKey:@"NSWorkspaceApplicationKey"];
 //    NSLog(@"App: %@", app);
@@ -196,7 +196,7 @@ MouseIndicatorWindow *mouseIndicator;
 {
     // Has active display changed?
     if ([newScreen isEqualTo:curScreen]) {
-        NSLog(@"Same screen, aborting");
+//        NSLog(@"Same screen, aborting");
         return;
     }
 
@@ -204,7 +204,7 @@ MouseIndicatorWindow *mouseIndicator;
     NSPoint nextMousePos;
     if ([self hasMousePosForScreen:newScreen]) {
         // Retrieve previous mouse pos on that display
-        NSLog(@"Restoring previous mouse pos");
+//        NSLog(@"Restoring previous mouse pos");
         nextMousePos = [self getMousePosForScreen:newScreen];
     } else {
         // None stored: determine center of new window
