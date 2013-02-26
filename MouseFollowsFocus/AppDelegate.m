@@ -21,6 +21,7 @@
 //  - FIXME: similar problem when closing an application.
 //    - this may result in the mouse cursor moving to a different display, depending on the previously focused app.
 //    - not sure how to remedy this. Mouse movement is unexpected; but it does reflect actual input focus change.
+//  - FIXME: clicking on desktop on non-primary display switches focus to primary display
 //
 //  Created by mongo on 18/02/2013.
 //  Copyright (c) 2013 martind. All rights reserved.
@@ -37,6 +38,12 @@ NSAttributedString *menuTitleInactive = nil;
 NSScreen *curScreen = nil;
 NSMutableDictionary *mousePosForScreen;
 
+NSWindow *mouseIndicator;
+float mouseIndicatorSize;
+NSColor *mouseIndicatorColor;
+float mouseIndicatorTimerInterval;
+float mouseIndicatorTimerFade;
+NSTimer *mouseIndicatorTimer;
 
 - (id)init {
     if (self = [super init]) {
@@ -85,7 +92,12 @@ NSMutableDictionary *mousePosForScreen;
     NSDictionary *appDefaults = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:@"isActive"];
     [[NSUserDefaults standardUserDefaults] registerDefaults:appDefaults];
     isActive = [[NSUserDefaults standardUserDefaults] boolForKey:@"isActive"];
-    
+
+    mouseIndicatorSize = 300;
+    mouseIndicatorColor = [NSColor orangeColor];
+    mouseIndicatorTimerInterval = 0.05;
+    mouseIndicatorTimerFade = 0.9;
+
     // Status bar / tray icon
     statusItem = [[NSStatusBar systemStatusBar] statusItemWithLength:NSVariableStatusItemLength];
     [statusItem setMenu:statusMenu];
@@ -206,10 +218,10 @@ NSMutableDictionary *mousePosForScreen;
         NSLog(@"Calculating new mouse pos from window bounds");
         nextMousePos = [self getCenterPointForWindow:window];
     }
-    
+
     // Remember current position -- but only if mouse hasn't moved off-screen already.
     NSPoint curMousePos = CGEventGetLocation(CGEventCreate(NULL));
-    if (NSPointInRect(curMousePos, [curScreen frame])) {
+    if (NSPointInRect(MouseCoordsToScreenCoords(curMousePos, curScreen), [curScreen frame])) {
 //        NSLog(@"Remembering mouse pos on previous screen %@", [self getIdForScreen:curScreen]);
         [self setMousePos:curMousePos forScreen:curScreen];
     } else {
@@ -219,13 +231,69 @@ NSMutableDictionary *mousePosForScreen;
     }
     
     // Move to new screen -- but only if we're not already on it.
-    if (!NSPointInRect(curMousePos, [newScreen frame])) {
+    if (!NSPointInRect(MouseCoordsToScreenCoords(curMousePos, newScreen), [newScreen frame])) {
         CGError error = CGWarpMouseCursorPosition(nextMousePos);
         if (error != kCGErrorSuccess) {
             NSLog(@"Error setting mouse position: %d", error);
         }
+        [self showMouseIndicatorAt:MouseCoordsToScreenCoords(nextMousePos, newScreen) onScreen:newScreen];
     }
     curScreen = newScreen;
+}
+
+// Mouse coords are with origin top-left
+// Screen bounds are with origin bottom-left
+NSPoint MouseCoordsToScreenCoords(NSPoint carbonMousePos, NSScreen *screen)
+{
+    NSPoint point;
+    point.x = carbonMousePos.x;
+    point.y = ([screen frame].origin.y + [screen frame].size.height - carbonMousePos.y);
+    return point;
+}
+
+- (void) showMouseIndicatorAt:(NSPoint)mousePos onScreen:(NSScreen*)screen
+{
+    if (!mouseIndicator) {
+        mouseIndicator = [[NSWindow alloc]
+                          initWithContentRect:NSMakeRect(0, 0, 100, 100)
+                          styleMask:NSBorderlessWindowMask
+                          backing:NSBackingStoreBuffered defer:NO
+                          screen:screen
+                          ];
+//        mouseIndicatorView = [MouseIndicator alloc];
+//        [mouseIndicator.contentView addSubview:mouseIndicatorView];
+        [mouseIndicator setLevel:NSScreenSaverWindowLevel];
+        [mouseIndicator setIgnoresMouseEvents:YES];
+        [mouseIndicator setOpaque:NO];
+        [mouseIndicator setBackgroundColor:mouseIndicatorColor];
+        [mouseIndicator setAlphaValue:0.0];
+    }
+    [mouseIndicator setFrame:NSMakeRect(mousePos.x - mouseIndicatorSize/2,
+                                        mousePos.y - mouseIndicatorSize/2,
+                                        mouseIndicatorSize,
+                                        mouseIndicatorSize)
+                     display:YES];
+    [mouseIndicator setAlphaValue:1.0];
+    [mouseIndicator orderFront:nil];
+    
+    mouseIndicatorTimer = [NSTimer scheduledTimerWithTimeInterval:mouseIndicatorTimerInterval
+                                                           target:self
+                                                         selector:@selector(updateMouseIndicator)
+                                                         userInfo:nil
+                                                          repeats:YES];
+}
+
+- (void) updateMouseIndicator
+{
+    float alpha = [mouseIndicator alphaValue];
+    alpha = alpha * mouseIndicatorTimerFade;
+    
+    if (alpha<0.05) {
+        alpha = 0.0;
+        [mouseIndicatorTimer invalidate];
+    }
+    [mouseIndicator setAlphaValue:alpha];
+    [mouseIndicator display];
 }
 
 - (Boolean) screenBoundsOf:(NSScreen*)screen containWindow:(NSDictionary*)window
