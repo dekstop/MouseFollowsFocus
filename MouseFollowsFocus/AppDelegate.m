@@ -143,12 +143,17 @@ MouseIndicatorWindow *mouseIndicator;
         // Check for key combinations that may trigger a focus change.
         // Full list: http://support.apple.com/kb/ht1343
         else if ([event type] == NSKeyUp) {
+//            NSLog(@"%d %@§§ %@", [event keyCode], [event characters], [event charactersIgnoringModifiers]);
             NSUInteger modifierKeyMask = NSCommandKeyMask | NSShiftKeyMask | NSAlternateKeyMask | NSControlKeyMask | NSFunctionKeyMask;
             NSUInteger modifierFlags = [event modifierFlags] & modifierKeyMask;
             unsigned short keyCode = [event keyCode];
             // Cmd
             if (modifierFlags == NSCommandKeyMask) {
                 switch (keyCode) {
+                    case kVK_ISO_Section: // '§'
+                        // Show mouse indicator (to debug)
+                        [mouseIndicator showAt:MouseCoordsToScreenCoords([self getMousePos], curScreen) onScreen:curScreen];
+                        break;
                     case kVK_LeftArrow:
                     case kVK_RightArrow:
                     case kVK_ANSI_Grave: // '~'
@@ -161,9 +166,6 @@ MouseIndicatorWindow *mouseIndicator;
             // Cmd+Shift
             else if (modifierFlags == (NSCommandKeyMask | NSShiftKeyMask)) {
                 switch (keyCode) {
-                    case kVK_ANSI_X: // Show mouse indicator (to debug)
-                        [mouseIndicator showAt:MouseCoordsToScreenCoords([self getMousePos], curScreen) onScreen:curScreen];
-                        break;
                     case kVK_ANSI_Grave: // '~'
                         doTrigger = TRUE;
                 }
