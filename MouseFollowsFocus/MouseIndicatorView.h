@@ -13,5 +13,6 @@
 }
 
 - (id)initWithFrame:(NSRect)frame color:(NSColor*)color;
+- (void)setScale:(float)scale;
 
 @end

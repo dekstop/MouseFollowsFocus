@@ -99,7 +99,7 @@ MouseIndicatorWindow *mouseIndicator;
     isActive = [[NSUserDefaults standardUserDefaults] boolForKey:@"isActive"];
     [launchOnStartupMenuItem setState:([self isLoginItem] ? NSOnState : NSOffState)];
 
-    mouseIndicator = [[MouseIndicatorWindow alloc] initWithSize:200 color:[NSColor redColor]];
+    mouseIndicator = [[MouseIndicatorWindow alloc] initWithSize:400 color:[NSColor redColor]];
 
     // Status bar / tray icon
     statusItem = [[NSStatusBar systemStatusBar] statusItemWithLength:NSVariableStatusItemLength];

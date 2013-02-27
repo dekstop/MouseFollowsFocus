@@ -14,7 +14,7 @@
 MouseIndicatorView *mouseIndicatorView;
 NSTimer *timer;
 
-float initialAlpha = 0.8;
+float initialAlpha;
 double startTime = 0;
 
 - (id)initWithSize:(int)_size color:(NSColor*)color
@@ -28,7 +28,8 @@ double startTime = 0;
     if (self)
     {
         size = _size;
-        timerInterval = 0.05;
+        initialAlpha = 0.8;
+        timerInterval = 0.02;
         duration = 0.5;
 
         [self setReleasedWhenClosed:NO];
@@ -39,6 +40,7 @@ double startTime = 0;
 
         mouseIndicatorView = [[MouseIndicatorView alloc] initWithFrame:[self frame] color:color];
         [self.contentView addSubview:mouseIndicatorView];
+        [mouseIndicatorView setScale:0];
 }
     return self;
 }
@@ -49,36 +51,35 @@ double startTime = 0;
                               mousePos.y - size/2,
                               size,
                               size)
-           display:YES];
-    [self orderFront:nil];
+           display:NO];
     
     if ([timer isValid]) {
         [timer invalidate]; // Stop active timer
     }
-    [self setAlphaValue:initialAlpha];
     startTime = CACurrentMediaTime();
     timer = [NSTimer scheduledTimerWithTimeInterval:timerInterval
                                                            target:self
                                                          selector:@selector(updateDisplayTimer)
                                                          userInfo:nil
                                                           repeats:YES];
+    [self orderFront:nil];
 }
 
 - (void) updateDisplayTimer
 {
     double elapsedTime = CACurrentMediaTime() - startTime;
     
-    float alpha;
     if (elapsedTime >= duration) {
-        alpha = 0.0;
+        [mouseIndicatorView setScale:0];
+        [self setAlphaValue:0];
         [timer invalidate];
         [self close];
     } else {
-        alpha = initialAlpha * (duration - elapsedTime) / duration;
-        alpha *= alpha;
+        float delta = elapsedTime / duration;
+        [mouseIndicatorView setScale:delta*delta];
+        [self setAlphaValue:initialAlpha*(1.0-delta)*(1.0-delta)];
     }
     
-    [self setAlphaValue:alpha];
     [self display];
 }
 
