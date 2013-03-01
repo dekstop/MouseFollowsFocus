@@ -56,14 +56,6 @@
 							<string key="NSResourceName">NSMenuMixedState</string>
 						</object>
 					</object>
-					<object class="NSMenuItem" id="1048625774">
-						<reference key="NSMenu" ref="1030939028"/>
-						<string key="NSTitle">Launch on system startup</string>
-						<string key="NSKeyEquiv"/>
-						<int key="NSMnemonicLoc">2147483647</int>
-						<reference key="NSOnImage" ref="920202169"/>
-						<reference key="NSMixedImage" ref="978171631"/>
-					</object>
 					<object class="NSMenuItem" id="91367770">
 						<reference key="NSMenu" ref="1030939028"/>
 						<bool key="NSIsDisabled">YES</bool>
@@ -90,6 +82,14 @@
 						<string key="NSTitle"/>
 						<string key="NSKeyEquiv"/>
 						<int key="NSKeyEquivModMask">1048576</int>
+						<int key="NSMnemonicLoc">2147483647</int>
+						<reference key="NSOnImage" ref="920202169"/>
+						<reference key="NSMixedImage" ref="978171631"/>
+					</object>
+					<object class="NSMenuItem" id="1048625774">
+						<reference key="NSMenu" ref="1030939028"/>
+						<string key="NSTitle">Launch on System Startup</string>
+						<string key="NSKeyEquiv"/>
 						<int key="NSMnemonicLoc">2147483647</int>
 						<reference key="NSOnImage" ref="920202169"/>
 						<reference key="NSMixedImage" ref="978171631"/>
@@ -215,8 +215,8 @@
 							<reference ref="195973517"/>
 							<reference ref="752040220"/>
 							<reference ref="1022890386"/>
-							<reference ref="1048625774"/>
 							<reference ref="91367770"/>
+							<reference ref="1048625774"/>
 							<reference ref="586361598"/>
 						</array>
 						<reference key="parent" ref="0"/>
