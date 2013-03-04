@@ -56,6 +56,33 @@
 							<string key="NSResourceName">NSMenuMixedState</string>
 						</object>
 					</object>
+					<object class="NSMenuItem" id="246092019">
+						<reference key="NSMenu" ref="1030939028"/>
+						<bool key="NSIsDisabled">YES</bool>
+						<bool key="NSIsSeparator">YES</bool>
+						<string key="NSTitle"/>
+						<string key="NSKeyEquiv"/>
+						<int key="NSKeyEquivModMask">1048576</int>
+						<int key="NSMnemonicLoc">2147483647</int>
+						<reference key="NSOnImage" ref="920202169"/>
+						<reference key="NSMixedImage" ref="978171631"/>
+					</object>
+					<object class="NSMenuItem" id="508055072">
+						<reference key="NSMenu" ref="1030939028"/>
+						<string key="NSTitle">Record Active Window</string>
+						<string key="NSKeyEquiv"/>
+						<int key="NSMnemonicLoc">2147483647</int>
+						<reference key="NSOnImage" ref="920202169"/>
+						<reference key="NSMixedImage" ref="978171631"/>
+					</object>
+					<object class="NSMenuItem" id="108636677">
+						<reference key="NSMenu" ref="1030939028"/>
+						<string key="NSTitle">Open Log...</string>
+						<string key="NSKeyEquiv"/>
+						<int key="NSMnemonicLoc">2147483647</int>
+						<reference key="NSOnImage" ref="920202169"/>
+						<reference key="NSMixedImage" ref="978171631"/>
+					</object>
 					<object class="NSMenuItem" id="91367770">
 						<reference key="NSMenu" ref="1030939028"/>
 						<bool key="NSIsDisabled">YES</bool>
@@ -171,6 +198,30 @@
 					</object>
 					<int key="connectionID">555</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">isRecordingMenuItem</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="508055072"/>
+					</object>
+					<int key="connectionID">559</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">openLog:</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="108636677"/>
+					</object>
+					<int key="connectionID">560</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">toggleIsRecording:</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="508055072"/>
+					</object>
+					<int key="connectionID">561</int>
+				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<array key="orderedObjects">
@@ -218,6 +269,9 @@
 							<reference ref="91367770"/>
 							<reference ref="1048625774"/>
 							<reference ref="586361598"/>
+							<reference ref="508055072"/>
+							<reference ref="108636677"/>
+							<reference ref="246092019"/>
 						</array>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -251,6 +305,21 @@
 						<reference key="object" ref="586361598"/>
 						<reference key="parent" ref="1030939028"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">556</int>
+						<reference key="object" ref="508055072"/>
+						<reference key="parent" ref="1030939028"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">557</int>
+						<reference key="object" ref="108636677"/>
+						<reference key="parent" ref="1030939028"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">558</int>
+						<reference key="object" ref="246092019"/>
+						<reference key="parent" ref="1030939028"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -266,12 +335,15 @@
 				<string key="543.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="546.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="547.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="556.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="557.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="558.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 			</dictionary>
 			<dictionary class="NSMutableDictionary" key="unlocalizedProperties"/>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">555</int>
+			<int key="maxID">561</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -280,13 +352,19 @@
 					<string key="superclassName">NSObject</string>
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="about:">id</string>
+						<string key="openLog:">id</string>
 						<string key="quit:">id</string>
 						<string key="toggleIsActive:">id</string>
+						<string key="toggleIsRecording:">id</string>
 						<string key="toggleLaunchOnStartup:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
 						<object class="IBActionInfo" key="about:">
 							<string key="name">about:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="openLog:">
+							<string key="name">openLog:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="quit:">
@@ -297,6 +375,10 @@
 							<string key="name">toggleIsActive:</string>
 							<string key="candidateClassName">id</string>
 						</object>
+						<object class="IBActionInfo" key="toggleIsRecording:">
+							<string key="name">toggleIsRecording:</string>
+							<string key="candidateClassName">id</string>
+						</object>
 						<object class="IBActionInfo" key="toggleLaunchOnStartup:">
 							<string key="name">toggleLaunchOnStartup:</string>
 							<string key="candidateClassName">id</string>
@@ -304,12 +386,17 @@
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="isActiveMenuItem">NSMenuItem</string>
+						<string key="isRecordingMenuItem">NSMenuItem</string>
 						<string key="launchOnStartupMenuItem">NSMenuItem</string>
 						<string key="statusMenu">NSMenu</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
 						<object class="IBToOneOutletInfo" key="isActiveMenuItem">
 							<string key="name">isActiveMenuItem</string>
+							<string key="candidateClassName">NSMenuItem</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="isRecordingMenuItem">
+							<string key="name">isRecordingMenuItem</string>
 							<string key="candidateClassName">NSMenuItem</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="launchOnStartupMenuItem">

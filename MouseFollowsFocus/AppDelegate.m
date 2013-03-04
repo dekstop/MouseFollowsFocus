@@ -34,16 +34,27 @@
 @synthesize isActive;
 NSAttributedString *menuTitleActive = nil;
 NSAttributedString *menuTitleInactive = nil;
+@synthesize isRecording;
 
 NSScreen *curScreen = nil;
 NSMutableDictionary *mousePosForScreen;
 
 MouseIndicatorWindow *mouseIndicator;
 
+NSString *logFilePath;
+NSDateFormatter *dateFormatter;
+NSFileHandle *logFile;
+
 - (id)init {
     if (self = [super init]) {
         mousePosForScreen = [[NSMutableDictionary alloc] init];
         curScreen = [NSScreen mainScreen];
+
+        dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss"];
+        logFilePath = [NSString stringWithFormat:@"%@/Library/Logs/MouseFollowsFocus.log", NSHomeDirectory()];
+        logFile = OpenUserLog(logFilePath);
+
         menuTitleActive = [[NSMutableAttributedString alloc] initWithString:@"M" attributes:@{NSForegroundColorAttributeName:[NSColor blackColor], NSFontAttributeName:[NSFont systemFontOfSize:14.0]}];
         menuTitleInactive = [[NSMutableAttributedString alloc] initWithString:@"M" attributes:@{NSForegroundColorAttributeName:[NSColor grayColor], NSFontAttributeName:[NSFont systemFontOfSize:14.0]}];
     }
@@ -64,6 +75,23 @@ MouseIndicatorWindow *mouseIndicator;
     //    [statusItem setTitle:@"M"];
     //    - (void)setImage:(NSImage *)image
     //    -(void)setAlternateImage:(NSImage *)image
+}
+
+- (IBAction)toggleIsRecording:(id)pId
+{
+    isRecording = !isRecording;
+    [[NSUserDefaults standardUserDefaults] setBool:isRecording forKey:@"isRecording"];
+    [self updateIsRecordingDisplay];
+}
+
+- (void)updateIsRecordingDisplay
+{
+    [isRecordingMenuItem setState:(isRecording ? NSOnState : NSOffState)];
+}
+
+- (IBAction)openLog:(id)pId
+{
+    [[NSWorkspace sharedWorkspace] openFile:logFilePath];
 }
 
 - (IBAction)toggleLaunchOnStartup:(id)pId
@@ -87,6 +115,16 @@ MouseIndicatorWindow *mouseIndicator;
     [NSApp performSelector:@selector(terminate:) withObject:nil afterDelay:0.0];
 }
 
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem
+{
+    SEL action = [menuItem action];
+    
+    if (action == @selector(toggleIsRecording:)) {
+        return (isActive ? YES : NO);
+    }
+    return YES;
+}
+
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     // Lose focus
@@ -97,6 +135,7 @@ MouseIndicatorWindow *mouseIndicator;
     [[NSUserDefaults standardUserDefaults] registerDefaults:appDefaults];
 
     isActive = [[NSUserDefaults standardUserDefaults] boolForKey:@"isActive"];
+    isRecording = [[NSUserDefaults standardUserDefaults] boolForKey:@"isRecording"];
     [launchOnStartupMenuItem setState:([self isLoginItem] ? NSOnState : NSOffState)];
 
     mouseIndicator = [[MouseIndicatorWindow alloc] initWithSize:400 color:[NSColor redColor]];
@@ -106,6 +145,7 @@ MouseIndicatorWindow *mouseIndicator;
     [statusItem setMenu:statusMenu];
     [statusItem setHighlightMode:YES];
     [self updateIsActiveDisplay];
+    [self updateIsRecordingDisplay];
     
     // Get display setup
     uint32_t numDisplays = 4;
@@ -202,22 +242,23 @@ MouseIndicatorWindow *mouseIndicator;
 
 - (void)notificationHandler:(NSNotification *)notification
 {
-    if (!isActive) {
-        return;
-    }
 //    NSLog(@"*** Notification: %@ ***", [notification name]);
     NSRunningApplication *app = [[notification userInfo] objectForKey:@"NSWorkspaceApplicationKey"];
 
     // Ignore our own app notifications during launch -- we don't have an app window.
-    if ([[app bundleIdentifier] isEqualTo:[[NSBundle mainBundle] bundleIdentifier]]) {
-        return;
-    }
+//    if ([[app bundleIdentifier] isEqualTo:[[NSBundle mainBundle] bundleIdentifier]]) {
+//        return;
+//    }
 
     [self updateActiveScreenForRunningApp:app];
 }
 
 - (void)updateActiveScreenForRunningApp:(NSRunningApplication*)app
 {
+    if (!isActive) {
+        return;
+    }
+
     NSDictionary *window = [self getFrontWindowForApp: app];
     //    NSLog(@"Window: %@", window);
     if (window==nil) {
@@ -234,11 +275,8 @@ MouseIndicatorWindow *mouseIndicator;
     }
     
     // Move mouse
-//    NSLog(@"Switched to window %@ on display %@",
-//          [window objectForKey:@"kCGWindowName"],
-//          [self getIdForScreen:newScreen]);
-    
     [self moveMouseToWindow:window onScreen:newScreen];
+    [self recordActiveWindow:window onScreen:newScreen];
 }
 
 - (NSDictionary*)getFrontWindowForApp:(NSRunningApplication *)app
@@ -412,6 +450,57 @@ void DisplayReconfigurationCallBack(CGDirectDisplayID display, CGDisplayChangeSu
         NSLog(@"Removing display %d", display);
         [mousePosForScreen removeObjectForKey:[NSNumber numberWithInteger:display]];
     }
+}
+
+/**
+ *
+ * Tools: logging.
+ *
+ **/
+
+- (void)recordActiveWindow:(NSDictionary*)window onScreen:(NSScreen*)screen
+{
+    if (isRecording) {
+        Log(@"Window \"%@\" on display %@",
+            [window objectForKey:@"kCGWindowName"],
+            [self getIdForScreen:screen]);
+    }
+}
+
+NSFileHandle *OpenUserLog(NSString *logFilePath)
+{
+    NSFileHandle *logFile;
+    NSFileManager * mFileManager = [NSFileManager defaultManager];
+    if([mFileManager fileExistsAtPath:logFilePath] == NO) {
+        [mFileManager createFileAtPath:logFilePath contents:nil attributes:nil];
+    }
+    logFile = [NSFileHandle fileHandleForWritingAtPath:logFilePath];
+    [logFile seekToEndOfFile];
+    return logFile;
+}
+
+void Log(NSString* format, ...)
+{
+    // Build string
+    va_list argList;
+    va_start(argList, format);
+    NSString* formattedMessage = [[NSString alloc] initWithFormat:format arguments:argList];
+    va_end(argList);
+    
+    // Console
+    //    NSLog(@"%@", formattedMessage);
+    
+    // File logging
+    NSString *logMessage = [NSString stringWithFormat:@"%@ %@\n",
+                            [dateFormatter stringFromDate:[NSDate date]],
+                            formattedMessage];
+    [logFile writeData:[logMessage dataUsingEncoding:NSUTF8StringEncoding]];
+    [logFile synchronizeFile];
+}
+
+- (void)applicationWillTerminate:(NSNotification *)aNotification
+{
+    [logFile closeFile];
 }
 
 /**
