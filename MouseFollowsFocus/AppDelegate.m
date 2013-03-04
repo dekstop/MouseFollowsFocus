@@ -152,7 +152,7 @@ MouseIndicatorWindow *mouseIndicator;
                 switch (keyCode) {
                     case kVK_ISO_Section: // '§'
                         // Show mouse indicator (to debug)
-                        [mouseIndicator showAt:MouseCoordsToScreenCoords([self getMousePos], curScreen) onScreen:curScreen];
+                        [mouseIndicator showAt:[self getMousePos] onScreen:curScreen];
                         break;
                     case kVK_LeftArrow:
                     case kVK_RightArrow:
@@ -234,9 +234,9 @@ MouseIndicatorWindow *mouseIndicator;
     }
     
     // Move mouse
-    NSLog(@"Switched to window %@ on display %@",
-          [window objectForKey:@"kCGWindowName"],
-          [self getIdForScreen:newScreen]);
+//    NSLog(@"Switched to window %@ on display %@",
+//          [window objectForKey:@"kCGWindowName"],
+//          [self getIdForScreen:newScreen]);
     
     [self moveMouseToWindow:window onScreen:newScreen];
 }
@@ -275,15 +275,7 @@ MouseIndicatorWindow *mouseIndicator;
     return newScreen;
 }
 
-- (NSPoint)getMousePos
-{
-    CGEventRef event = CGEventCreate(NULL);
-    NSPoint curMousePos = CGEventGetLocation(event);
-    CFRelease(event);
-    return curMousePos;
-}
-
-- (void)moveMouseToWindow:(NSDictionary *)window onScreen:(id)newScreen
+- (void)moveMouseToWindow:(NSDictionary *)window onScreen:(NSScreen*)newScreen
 {
     // Has active display changed?
     if ([newScreen isEqualTo:curScreen]) {
@@ -300,13 +292,13 @@ MouseIndicatorWindow *mouseIndicator;
     } else {
         // None stored: determine center of new window
         NSLog(@"Calculating new mouse pos from window bounds");
-        nextMousePos = [self getCenterPointForWindow:window];
+        nextMousePos = [self getCenterPointForWindow:window onScreen:newScreen];
     }
 
     // Remember current position -- but only if mouse hasn't moved off-screen already.
     NSPoint curMousePos = [self getMousePos];
 
-    if (NSPointInRect(MouseCoordsToScreenCoords(curMousePos, curScreen), [curScreen frame])) {
+    if (NSPointInRect(curMousePos, [curScreen frame])) {
 //        NSLog(@"Remembering mouse pos on previous screen %@", [self getIdForScreen:curScreen]);
         [self setPreviousMousePos:curMousePos forScreen:curScreen];
     } else {
@@ -316,39 +308,71 @@ MouseIndicatorWindow *mouseIndicator;
     }
     
     // Move to new screen -- but only if we're not already on it.
-    if (!NSPointInRect(MouseCoordsToScreenCoords(curMousePos, newScreen), [newScreen frame])) {
-        CGError error = CGWarpMouseCursorPosition(nextMousePos);
-        if (error != kCGErrorSuccess) {
-            NSLog(@"Error setting mouse position: %d", error);
-        }
-        [mouseIndicator showAt:MouseCoordsToScreenCoords(nextMousePos, newScreen) onScreen:newScreen];
+    if (!NSPointInRect(curMousePos, [newScreen frame])) {
+        [self setMousePos:nextMousePos];
+        [mouseIndicator showAt:nextMousePos onScreen:newScreen];
     }
     curScreen = newScreen;
 }
 
-// Mouse coords are with origin top-left
-// Screen bounds are with origin bottom-left
-NSPoint MouseCoordsToScreenCoords(NSPoint carbonMousePos, NSScreen *screen)
+- (NSPoint)getMousePos
 {
-    NSPoint point;
-    point.x = carbonMousePos.x;
-    point.y = ([screen frame].origin.y + [screen frame].size.height - carbonMousePos.y);
-    return point;
+//    CGEventRef event = CGEventCreate(NULL);
+//    NSPoint curMousePos = CGEventGetLocation(event);
+//    CFRelease(event);
+//    return curMousePos;
+    return [NSEvent mouseLocation];
+}
+
+- (void)setMousePos:(NSPoint)pos
+{
+    // Need to convert from AppKit screen coordinates to Quartz mouse coordinates:
+    CGError error = CGWarpMouseCursorPosition([self appkitToQuartz:pos]);
+    if (error != kCGErrorSuccess) {
+        NSLog(@"Error setting mouse position: %d", error);
+    }
 }
 
 - (Boolean)screenBoundsOf:(NSScreen*)screen containWindow:(NSDictionary*)window
 {
     CGRect bounds;
     CGRectMakeWithDictionaryRepresentation((__bridge CFDictionaryRef)[window objectForKey:@"kCGWindowBounds"], &bounds);
-    CGRect intersection = CGRectIntersection([screen frame], bounds);
+    // Comparing Quartz window bounds with AppKit screen dimensions: need to convert them first.
+    CGRect intersection = CGRectIntersection([screen frame], [self quartzToAppkit:bounds]);
     return intersection.size.height > 0 && intersection.size.width > 0;
 }
 
-- (NSPoint)getCenterPointForWindow:(NSDictionary*)window
+- (NSPoint)getCenterPointForWindow:(NSDictionary*)window onScreen:(NSScreen*)screen
 {
     CGRect bounds;
     CGRectMakeWithDictionaryRepresentation((__bridge CFDictionaryRef)[window objectForKey:@"kCGWindowBounds"], &bounds);
-    return CGPointMake(bounds.origin.x + (bounds.size.width / 2), bounds.origin.y + (bounds.size.height / 2));
+    // Constructing AppKit point from Quartz coordinates: need to convert first.
+    bounds = [self quartzToAppkit:bounds];
+    return NSMakePoint(
+                       bounds.origin.x + (bounds.size.width / 2),
+                       bounds.origin.y + (bounds.size.height / 2));
+}
+
+// Convert vertical coordinates relative to main screen:
+// - AppKit coords are with origin bottom-left
+// - Quartz coords are with origin top-left
+- (CGPoint)appkitToQuartz:(NSPoint)point
+{
+    return CGPointMake(
+        point.x,
+        [NSScreen mainScreen].frame.size.height - point.y);
+}
+
+// Convert vertical coordinates relative to main screen:
+// - AppKit coords are with origin bottom-left
+// - Quartz coords are with origin top-left
+- (NSRect)quartzToAppkit:(CGRect)rect
+{
+    return NSMakeRect(
+        rect.origin.x,
+        [NSScreen mainScreen].frame.size.height - rect.origin.y - rect.size.height,
+        rect.size.width,
+        rect.size.height);
 }
 
 - (id)getIdForScreen:(NSScreen*)screen
