@@ -402,9 +402,14 @@ MouseIndicatorWindow *mouseIndicator;
 
 void DisplayReconfigurationCallBack(CGDirectDisplayID display, CGDisplayChangeSummaryFlags flags, void *userInfo)
 {
-    if (flags & kCGDisplayRemoveFlag) {
+    u_int32_t mutatorFlags = // Changes to the shape or position, or disabling of the display.
+        kCGDisplayMovedFlag |
+        kCGDisplayRemoveFlag |
+        kCGDisplayDisabledFlag |
+        kCGDisplayMirrorFlag |
+        kCGDisplayDesktopShapeChangedFlag;
+    if (flags & mutatorFlags) {
         NSLog(@"Removing display %d", display);
-//        [self clearPreviousMousePosForScreen:display];
         [mousePosForScreen removeObjectForKey:[NSNumber numberWithInteger:display]];
     }
 }
