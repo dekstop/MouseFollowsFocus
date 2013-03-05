@@ -276,7 +276,7 @@ NSFileHandle *logFile;
     
     // Move mouse
     [self moveMouseToWindow:window onScreen:newScreen];
-    [self recordActiveWindow:window onScreen:newScreen];
+    [self recordActiveWindow:window forApplication:app onScreen:newScreen];
 }
 
 - (NSDictionary*)getFrontWindowForApp:(NSRunningApplication *)app
@@ -452,17 +452,24 @@ void DisplayReconfigurationCallBack(CGDirectDisplayID display, CGDisplayChangeSu
     }
 }
 
+- (NSString*)getApplicationName:(NSRunningApplication*)app
+{
+    NSString * path = [[NSWorkspace sharedWorkspace]absolutePathForAppBundleWithIdentifier:[app bundleIdentifier]];
+    return [[NSFileManager defaultManager] displayNameAtPath:path];
+}
+
 /**
  *
  * Tools: logging.
  *
  **/
 
-- (void)recordActiveWindow:(NSDictionary*)window onScreen:(NSScreen*)screen
+- (void)recordActiveWindow:(NSDictionary*)window forApplication:(NSRunningApplication*)app onScreen:(NSScreen*)screen
 {
     if (isRecording) {
-        Log(@"Window \"%@\" on display %@",
+        Log(@"Window \"%@\" of application \"%@\" on display %@",
             [window objectForKey:@"kCGWindowName"],
+            [self getApplicationName:app],
             [self getIdForScreen:screen]);
     }
 }
