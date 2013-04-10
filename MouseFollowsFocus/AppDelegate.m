@@ -190,7 +190,7 @@ NSFileHandle *logFile;
             // Cmd
             if (modifierFlags == NSCommandKeyMask) {
                 switch (keyCode) {
-                    case kVK_ISO_Section: // '§'
+                    case kVK_Escape:
                         // Show mouse indicator (to debug)
                         [mouseIndicator showAt:[self getMousePos] onScreen:curScreen];
                         break;
