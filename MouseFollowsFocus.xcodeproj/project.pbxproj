@@ -10,6 +10,7 @@
 		1A09AAAB16DC35C900034BF3 /* MouseIndicatorWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A09AAAA16DC35C900034BF3 /* MouseIndicatorWindow.m */; };
 		1A09AAAE16DC3BE100034BF3 /* MouseIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A09AAAD16DC3BE100034BF3 /* MouseIndicatorView.m */; };
 		1A562FC616DC7CA600483F28 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A562FC516DC7CA600483F28 /* Carbon.framework */; };
+		1ABDDF711875C34900B9D567 /* README in Resources */ = {isa = PBXBuildFile; fileRef = 1ABDDF701875C34900B9D567 /* README */; };
 		1ADFB71416DD65AE00F15407 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ADFB71316DD65AE00F15407 /* QuartzCore.framework */; };
 		1AEB706C16D27882007A35D2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AEB706B16D27882007A35D2 /* Cocoa.framework */; };
 		1AEB707616D27882007A35D2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1AEB707416D27882007A35D2 /* InfoPlist.strings */; };
@@ -25,6 +26,7 @@
 		1A09AAAC16DC3BE100034BF3 /* MouseIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MouseIndicatorView.h; sourceTree = "<group>"; };
 		1A09AAAD16DC3BE100034BF3 /* MouseIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MouseIndicatorView.m; sourceTree = "<group>"; };
 		1A562FC516DC7CA600483F28 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
+		1ABDDF701875C34900B9D567 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		1ADFB71316DD65AE00F15407 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		1AEB706816D27882007A35D2 /* MouseFollowsFocus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MouseFollowsFocus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AEB706B16D27882007A35D2 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -58,6 +60,7 @@
 		1AEB705F16D27882007A35D2 = {
 			isa = PBXGroup;
 			children = (
+				1ABDDF701875C34900B9D567 /* README */,
 				1ADFB71316DD65AE00F15407 /* QuartzCore.framework */,
 				1A562FC516DC7CA600483F28 /* Carbon.framework */,
 				1AEB707116D27882007A35D2 /* MouseFollowsFocus */,
@@ -171,6 +174,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1ABDDF711875C34900B9D567 /* README in Resources */,
 				1AEB707616D27882007A35D2 /* InfoPlist.strings in Resources */,
 				1AEB707C16D27883007A35D2 /* Credits.rtf in Resources */,
 				1AEB708216D27883007A35D2 /* MainMenu.xib in Resources */,

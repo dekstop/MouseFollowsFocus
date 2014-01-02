@@ -27,6 +27,17 @@ Compile, run.
 Only tested with Xcode 4.6 on OS X 10.8
 
 
+== Troubleshooting: Access for Assistive Devices
+
+Make sure to enable "Access for Assistive Devices" in your system preferences, otherwise we
+won't be able to access information about other applications.
+
+In OS X 10.9 Mavericks:
+* System Settings > Security & Privacy > Privacy Tab > Accessibility
+* Allow access for MouseFollowsFocus
+* Restart the MouseFollowsFocus application
+
+
 == See Also
 
 Found these after I started this project:
